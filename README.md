@@ -632,6 +632,21 @@ already paid out everything for that stream. A cancelled stream's
 vested-but-unwithdrawn balance, if the recipient has not claimed it yet,
 still exists in escrow and is reported by `withdrawable`, not `locked`.
 
+## Upgradeability
+
+**The contract is immutable.** There is no admin, owner, proxy, or
+`update_current_contract_wasm` path, so once deployed the code at a contract
+address can never change — not by the deployer, not by anyone else. Anyone
+locking funds in a stream can rely on the rules they see today being the rules
+that apply until the stream ends.
+
+The flip side is that bugs cannot be patched in place. A fix requires deploying
+a new contract (a new address) and migrating: existing streams stay on the old
+contract and run to completion or are cancelled there, while new streams are
+created on the new one. Integrators must point clients at the new contract ID.
+See [docs/INTEGRATOR_OPERATIONS.md](docs/INTEGRATOR_OPERATIONS.md) and
+[THREAT_MODEL.md § Immutability](THREAT_MODEL.md#immutability).
+
 ## Events
 
 Every mutating entry point publishes a Soroban event when it succeeds. Rejected
